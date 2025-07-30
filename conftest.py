@@ -10,3 +10,5 @@ def driver():
     yield driver
     driver.quit()
 
+def pytest_make_parametrize_id(val):
+    return repr(val)

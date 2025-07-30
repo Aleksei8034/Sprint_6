@@ -1,5 +1,7 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class BasePage:
@@ -25,6 +27,11 @@ class BasePage:
         element = self.find_element_with_wait(locator)
         return element.text
 
+    
+    def send_keys_to_input(self, locator, keys):
+        self.driver.find_element(*locator).send_keys(keys)
+
+
     def send_keys_to_element(self, locator, text):
         element = self.find_element_with_wait(locator)
         element.send_keys(text)
@@ -47,3 +54,23 @@ class BasePage:
     def wait_for_new_window(self, url):
         WebDriverWait(self.driver, 5).until(EC.url_to_be(url))
 
+
+    def scroll_to_element(self, locator):
+        element = self.driver.find_element(*locator)
+        self.driver.execute_script('arguments[0].scrollIntoView();', element)
+
+    def wait_visibility_of_element(self, locator):
+        return WebDriverWait(self.driver, 6).until(expected_conditions.visibility_of_element_located(locator))
+
+
+    def get_text_on_element(self, locator):
+        return self.driver.find_element(*locator).text
+
+    
+    def switch_to_next_tab(self):
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+   
+    
+    def check_displaying_of_element(self, locator):
+        return self.driver.find_element(*locator).is_displayed()

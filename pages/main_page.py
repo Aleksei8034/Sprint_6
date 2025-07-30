@@ -41,21 +41,23 @@ class MainPage(BasePage):
         self.find_element_with_wait(MainPageLocator.YANDEX_ICON)
         self.click_on_element(MainPageLocator.YANDEX_ICON)
 
-    @allure.step('Скролим до вопросов')
-    def scrolling_to_questions(self):
-        self.scroll_to_element(MainPageLocator.QUESTION_8)
 
-    @allure.step('Нажимаем на вопрос и получаем ответ')
-    def click_on_question_and_get_answer(self, QUESTION_LOCATOR, ANSWER_LOCATOR, question_num):
-        method, locator = QUESTION_LOCATOR
-        locator = locator.format(question_num)
-        self.click_on_question((method, locator))
-        method, locator = ANSWER_LOCATOR
-        locator = locator.format(question_num)
-        return self.get_text_from_element((method, locator))
+    @allure.step('Проскроллить до секции "Вопросы о важном"')
+    def scroll_to_faq_section(self):
+        self.scroll_to_element(MainPageLocator.faq_section)
 
+    @allure.step('Подождать прогрузки нужного номера вопроса в аккордеоне "Вопросы о важнoм"')
+    def wait_visibility_of_faq_items(self, data):
+        self.wait_visibility_of_element(MainPageLocator.faq_questions_items[data])
 
-    @allure.step('Ожидаемый текст ответа и фактический  ответ')
-    def check_answer(self, result, expected_answer):
-        return result == expected_answer
+    @allure.step('Кликнуть на нужный номер вопроса в аккордеоне "Вопросы о важнoм"')
+    def click_on_faq_items(self, data):
+        self.click_on_element(MainPageLocator.faq_questions_items[data])
 
+    @allure.step('Подождать прогрузки нужного номера ответа в аккордеоне "Вопросы о важнoм"')
+    def wait_visibility_of_faq_answer(self, data):
+        self.wait_visibility_of_element(MainPageLocator.faq_answers_items[data])
+
+    @allure.step('Получить текст нужного номера ответа в аккордеоне "Вопросы о важнoм"')
+    def get_displayed_text_from_faq_answer(self, data):
+        return self.get_text_on_element(MainPageLocator.faq_answers_items[data])

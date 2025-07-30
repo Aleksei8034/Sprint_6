@@ -1,29 +1,18 @@
-import pytest
-from data import *
 import allure
 from pages.main_page import MainPage
-from locators.main_page_locators import MainPageLocator
+from conftest import * 
+from data import Answer
+import pytest
 
 
-class TestQuestionsMainPage:
-
-    @allure.title('вопросы и ответы на главной странице')
-    @allure.description(
-        'Кликаем на вопросы  и сравниваем ответы в выпадающей строке')
-    @pytest.mark.parametrize("question_num, expected_answer",
-                             [(0, TrueAnswer.answer_1),
-                              (1, TrueAnswer.answer_2),
-                              (2, TrueAnswer.answer_3),
-                              (3, TrueAnswer.answer_4),
-                              (4, TrueAnswer.answer_5),
-                              (5, TrueAnswer.answer_6),
-                              (6, TrueAnswer.answer_7),
-                              (7, TrueAnswer.answer_8 )
-                              ]
-    )
-    def test_questions(self, driver, question_num, expected_answer):
+class TestMainPageFaq:
+    @allure.title('"Вопросы о важном"')
+    @allure.description('Кликаем на вопросы и сравниваем ответы')
+    @pytest.mark.parametrize('question_number, expected_answer', Answer.test_data_expected_answer_faq)
+    def test_click_faq_expand_icons_text_is_expected(self, driver, question_number, expected_answer):
         main_page = MainPage(driver)
-        main_page.click_on_cookie_button()
-        main_page.scrolling_to_questions()
-        result = main_page.click_on_question_and_get_answer(MainPageLocator.QUESTION_LOCATOR, MainPageLocator.ANSWER_LOCATOR, question_num)
-        assert main_page.check_answer(result, expected_answer)
+        main_page.scroll_to_faq_section()
+        main_page.wait_visibility_of_faq_items(question_number)
+        main_page.click_on_faq_items(question_number)
+        main_page.wait_visibility_of_faq_answer(question_number)
+        assert main_page.get_displayed_text_from_faq_answer(question_number) == expected_answer
